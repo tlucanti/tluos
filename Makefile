@@ -1,6 +1,7 @@
 
 CC   ?= riscv64-unknown-elf-gcc
 LD   ?= riscv64-unknown-elf-ld
+GDB  ?= riscv64-unknown-elf-gdb
 QEMU ?= qemu-system-riscv64
 
 CFLAGS  += -Wall -Wextra
@@ -15,10 +16,27 @@ NAME = kernel.img
 
 obj =
 
-all:
-	$(CC) $(CFLAGS) -c kernel/entry.S -o kernel/entry.o
-	$(LD) $(LDFLAGS) -T link.lds -o $(NAME) kernel/entry.o
+obj += kernel/entry.o
+obj += kernel/start_kernel.o
 
-run: all
-	$(QEMU) -nographic -machine virt -bios none -kernel $(NAME)
+$(NAME): $(obj)
+	$(LD) $(LDFLAGS) -T link.lds -o $(NAME) $(obj)
+
+run: $(NAME)
+	$(QEMU) -nographic -machine virt -bios none -kernel $(NAME) -d guest_errors
+
+run-gdb: $(NAME)
+	$(QEMU) -nographic -machine virt -bios none -kernel $(NAME) -d int,guest_errors -s -S
+
+gdb:
+	$(GDB)
+
+clean:
+	rm -f $(obj) $(NAME)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.S
+	$(CC) $(CFLAGS) -c $< -o $@
 
