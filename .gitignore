@@ -1,0 +1,9 @@
+.cache
+kernel.img
+compile_commands.json
+
+.gdb_history
+peda-*
+
+*.o
+
