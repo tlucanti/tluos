@@ -12,10 +12,21 @@ NAME = kernel.img
 
 obj =
 
-all:
-	$(CC) $(CFLAGS) -c kernel/entry.S -o kernel/entry.o
-	$(LD) $(LDFLAGS) -T link.lds -o $(NAME) kernel/entry.o
+obj += kernel/entry.o
+obj += kernel/start_kernel.o
 
-qemu: all
+$(NAME): $(obj)
+	$(LD) $(LDFLAGS) -T link.lds -o $(NAME) $(obj)
+
+qemu: $(NAME)
 	qemu-system-riscv64 -nographic -machine virt -bios none -kernel $(NAME)
+
+clean:
+	rm -f $(obj)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.S
+	$(CC) $(CFLAGS) -c $< -o $@
 
