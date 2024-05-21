@@ -18,6 +18,7 @@ obj =
 
 obj += kernel/entry.o
 obj += kernel/start_kernel.o
+obj += kernel/uart.o
 
 $(NAME): $(obj)
 	$(LD) $(LDFLAGS) -T link.ld -o $(NAME) $(obj)
