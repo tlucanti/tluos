@@ -1,6 +1,9 @@
 
 #include <kernel/types.h>
 #include <sys/kconsole.h>
+#include <sys/riscv.h>
+
+extern void trap_init(void);
 
 void echo_loop(void)
 {
@@ -36,8 +39,11 @@ void echo_loop(void)
 void main(void)
 {
 	kconsole_init();
+	trap_init();
 
 	kconsole_puts("Hello, kernel\n");
+
+	rv_ecall();
 
 	echo_loop();
 }
