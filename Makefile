@@ -21,6 +21,9 @@ obj += kernel/start_kernel.o
 obj += kernel/uart.o
 obj += kernel/console.o
 
+obj += kernel/kernelvec.o
+obj += kernel/trap.o
+
 $(NAME): $(obj)
 	$(LD) $(LDFLAGS) -o $(NAME) $(obj)
 
