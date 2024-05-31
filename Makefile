@@ -22,6 +22,9 @@ obj += kernel/start_kernel.o
 obj += kernel/uart.o
 obj += kernel/kconsole.o
 
+obj += kernel/kernelvec.o
+obj += kernel/trap.o
+
 $(NAME): $(obj)
 	$(LD) $(LDFLAGS) -T link.lds -o $(NAME) $(obj)
 

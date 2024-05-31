@@ -2,15 +2,21 @@
 #include <kernel/types.h>
 #include <kernel/attributes.h>
 #include <sys/kconsole.h>
+#include <sys/riscv.h>
 
 __aligned(16)
 uint8 _kernel_stack[4096];
 
+extern void trap_init(void);
+
 void start_kernel(void)
 {
 	kconsole_init();
+	trap_init();
 
 	kconsole_puts("Hello, kernel\n");
+
+	rv_ecall();
 
 	while (true) {
 		char c;
