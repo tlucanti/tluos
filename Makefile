@@ -1,12 +1,14 @@
 
 CC = riscv64-linux-gnu-gcc
 LD = riscv64-linux-gnu-ld
+QEMU = qemu-system-riscv64
 
 CFLAGS = -Wall -Wextra
+CFLAGS += -O0 -ggdb
 CFLAGS += -nostdlib
-LDFLAGS =
-
 CFLAGS += -I include
+
+LDFLAGS = -T link.ld
 
 NAME = kernel.img
 
@@ -14,21 +16,28 @@ obj =
 
 obj += kernel/entry.o
 obj += kernel/start_kernel.o
+
 obj += kernel/uart.o
 obj += kernel/console.o
 
 $(NAME): $(obj)
-	$(LD) $(LDFLAGS) -T link.lds -o $(NAME) $(obj)
+	$(LD) $(LDFLAGS) -o $(NAME) $(obj)
 
 qemu: $(NAME)
-	qemu-system-riscv64 -nographic -machine virt -bios none -kernel $(NAME)
+	$(QEMU) -nographic -machine virt -bios none -kernel $(NAME)
+
+qemu-gdb: $(NAME)
+	$(QEMU) -nographic -machine virt -bios none -kernel $(NAME) -S -gdb tcp::27000
+
+.PHONY: qemu
 
 clean:
 	rm -f $(obj)
+.PHONY: clean
 
-%.o: %.c
+%.o: %.c Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
 
-%.o: %.S
+%.o: %.S Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
 
