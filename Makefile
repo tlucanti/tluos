@@ -15,6 +15,7 @@ NAME = kernel.img
 obj =
 
 obj += kernel/entry.o
+obj += kernel/riscv.o
 obj += kernel/start_kernel.o
 
 obj += kernel/uart.o
