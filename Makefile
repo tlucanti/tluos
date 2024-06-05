@@ -23,6 +23,9 @@ obj += kernel/console.o
 
 obj += kernel/kernelvec.o
 obj += kernel/trap.o
+obj += kernel/syscall.o
+
+obj += user/usys.o
 obj += user/init.o
 
 $(NAME): $(obj)
@@ -45,4 +48,3 @@ clean:
 
 %.o: %.S Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
-
