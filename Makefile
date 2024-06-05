@@ -17,6 +17,7 @@ NAME = kernel.img
 obj =
 
 obj += kernel/entry.o
+obj += kernel/aclint.o
 obj += kernel/riscv.o
 obj += kernel/start_kernel.o
 obj += kernel/uart.o
@@ -29,10 +30,10 @@ $(NAME): $(obj)
 	$(LD) $(LDFLAGS) -T link.lds -o $(NAME) $(obj)
 
 run: $(NAME)
-	$(QEMU) -nographic -machine virt -bios none -kernel $(NAME) -d guest_errors
+	$(QEMU) -nographic -machine virt,aclint=on -bios none -kernel $(NAME) -d guest_errors
 
 run-gdb: $(NAME)
-	$(QEMU) -nographic -machine virt -bios none -kernel $(NAME) -d int,guest_errors -s -S
+	$(QEMU) -nographic -machine virt,aclint=on -bios none -kernel $(NAME) -d int,guest_errors -s -S
 
 gdb:
 	$(GDB)
