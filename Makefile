@@ -5,7 +5,7 @@ QEMU = qemu-system-riscv64
 
 CFLAGS = -Wall -Wextra
 CFLAGS += -O0 -ggdb
-CFLAGS += -nostdlib
+CFLAGS += -nostdlib -mcmodel=medany
 CFLAGS += -I include
 
 LDFLAGS = -T link.ld
@@ -23,6 +23,7 @@ obj += kernel/console.o
 
 obj += kernel/kernelvec.o
 obj += kernel/trap.o
+obj += user/init.o
 
 $(NAME): $(obj)
 	$(LD) $(LDFLAGS) -o $(NAME) $(obj)
