@@ -1,8 +1,14 @@
 
+#include <kernel/task.h>
 #include <sys/console.h>
 #include <sys/riscv.h>
 
 extern void kernelvec(void);
+
+__aligned(16)
+extern uint8 _kernel_stack[4096];
+
+struct frame trapframe;
 
 void trap_handler(void)
 {
