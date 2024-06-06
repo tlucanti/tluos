@@ -35,6 +35,26 @@ struct mstatus {
 	};
 };
 
+struct mie {
+	union {
+		uint64 value;
+		struct {
+			uint64 usie : 1;
+			uint64 ssie : 1;
+			uint64      : 1;
+			uint64 msie : 1;
+			uint64 utie : 1;
+			uint64 stie : 1;
+			uint64      : 1;
+			uint64 mtie : 1;
+			uint64 ueie : 1;
+			uint64 seie : 1;
+			uint64      : 1;
+			uint64 meie : 1;
+		};
+	};
+};
+
 /**
  * RISC-V instructions mapping
  */
@@ -107,6 +127,118 @@ uint64 csr_read_mstatus(void)
 }
 
 __always_inline
+bool csr_read_mstatus_uie(void)
+{
+	struct mstatus mstatus;
+	mstatus.value = csr_read_mstatus();
+	return mstatus.uie;
+}
+
+__always_inline
+bool csr_read_mstatus_upie(void)
+{
+	struct mstatus mstatus;
+	mstatus.value = csr_read_mstatus();
+	return mstatus.upie;
+}
+
+__always_inline
+bool csr_read_mstatus_sie(void)
+{
+	struct mstatus mstatus;
+	mstatus.value = csr_read_mstatus();
+	return mstatus.sie;
+}
+
+__always_inline
+bool csr_read_mstatus_spie(void)
+{
+	struct mstatus mstatus;
+	mstatus.value = csr_read_mstatus();
+	return mstatus.spie;
+}
+
+__always_inline
+bool csr_read_mstatus_spp(void)
+{
+	struct mstatus mstatus;
+	mstatus.value = csr_read_mstatus();
+	return mstatus.spp;
+}
+
+__always_inline
+bool csr_read_mstatus_sum(void)
+{
+	struct mstatus mstatus;
+	mstatus.value = csr_read_mstatus();
+	return mstatus.sum;
+}
+
+__always_inline
+bool csr_read_mstatus_sd(void)
+{
+	struct mstatus mstatus;
+	mstatus.value = csr_read_mstatus();
+	return mstatus.sd;
+}
+
+__always_inline
+bool csr_read_mstatus_mie(void)
+{
+	struct mstatus mstatus;
+	mstatus.value = csr_read_mstatus();
+	return mstatus.mie;
+}
+
+__always_inline
+bool csr_read_mstatus_mpie(void)
+{
+	struct mstatus mstatus;
+	mstatus.value = csr_read_mstatus();
+	return mstatus.mpie;
+}
+
+__always_inline
+enum mstatus_mpp csr_read_mstatus_mpp(void)
+{
+	struct mstatus mstatus;
+	mstatus.value = csr_read_mstatus();
+	return mstatus.mpp;
+}
+
+__always_inline
+bool csr_read_mstatus_mprv(void)
+{
+	struct mstatus mstatus;
+	mstatus.value = csr_read_mstatus();
+	return mstatus.mprv;
+}
+
+__always_inline
+bool csr_read_mstatus_mxr(void)
+{
+	struct mstatus mstatus;
+	mstatus.value = csr_read_mstatus();
+	return mstatus.mxr;
+}
+
+__always_inline
+enum mstatus_fs csr_read_mstatus_fs(void)
+{
+	struct mstatus mstatus;
+	mstatus.value = csr_read_mstatus();
+	return mstatus.fs;
+}
+
+__always_inline
+enum mstatus_xs csr_read_mstatus_xs(void)
+{
+	struct mstatus mstatus;
+	mstatus.value = csr_read_mstatus();
+	return mstatus.xs;
+}
+
+__always_inline
 uint64 csr_read_misa(void)
 {
 	uint64 x;
@@ -115,11 +247,92 @@ uint64 csr_read_misa(void)
 }
 
 __always_inline
+struct misa_extensions csr_read_misa_extensions(void)
+{
+	const uint64 MISA_EXTENSIONS_MASK = (1ul << 27) - 1; // first 26 bits are extension bits
+	struct misa_extensions extensions;
+	extensions.value = csr_read_misa() & MISA_EXTENSIONS_MASK;
+	return extensions;
+}
+
+__always_inline
 uint64 csr_read_mie(void)
 {
 	uint64 x;
 	asm volatile("csrr %0, mie" : "=r" (x) );
 	return x;
+}
+
+__always_inline
+bool csr_read_mie_usie(void)
+{
+	struct mie mie;
+	mie.value = csr_read_mie();
+	return mie.usie;
+}
+
+__always_inline
+bool csr_read_mie_utie(void)
+{
+	struct mie mie;
+	mie.value = csr_read_mie();
+	return mie.utie;
+}
+
+__always_inline
+bool csr_read_mie_ueie(void)
+{
+	struct mie mie;
+	mie.value = csr_read_mie();
+	return mie.ueie;
+}
+
+__always_inline
+bool csr_read_mie_ssie(void)
+{
+	struct mie mie;
+	mie.value = csr_read_mie();
+	return mie.ssie;
+}
+
+__always_inline
+bool csr_read_mie_stie(void)
+{
+	struct mie mie;
+	mie.value = csr_read_mie();
+	return mie.stie;
+}
+
+__always_inline
+bool csr_read_mie_seie(void)
+{
+	struct mie mie;
+	mie.value = csr_read_mie();
+	return mie.seie;
+}
+
+__always_inline
+bool csr_read_mie_msie(void)
+{
+	struct mie mie;
+	mie.value = csr_read_mie();
+	return mie.msie;
+}
+
+__always_inline
+bool csr_read_mie_mtie(void)
+{
+	struct mie mie;
+	mie.value = csr_read_mie();
+	return mie.mtie;
+}
+
+__always_inline
+bool csr_read_mie_meie(void)
+{
+	struct mie mie;
+	mie.value = csr_read_mie();
+	return mie.meie;
 }
 
 __always_inline
@@ -150,12 +363,82 @@ void csr_write_mstatus(uint64 x)
 }
 
 __always_inline
-void csr_write_mstatus_mpp(enum mstatus_mpp_mode mode)
+void csr_write_mstatus_uie(bool enable)
 {
 	struct mstatus mstatus;
 
 	mstatus.value = csr_read_mstatus();
-	mstatus.mpp = mode;
+	mstatus.uie = enable;
+	csr_write_mstatus(mstatus.value);
+}
+
+__always_inline
+void csr_write_mstatus_upie(bool enable)
+{
+	struct mstatus mstatus;
+
+	mstatus.value = csr_read_mstatus();
+	mstatus.upie = enable;
+	csr_write_mstatus(mstatus.value);
+}
+
+__always_inline
+void csr_write_mstatus_sie(bool enable)
+{
+	struct mstatus mstatus;
+
+	mstatus.value = csr_read_mstatus();
+	mstatus.sie = enable;
+	csr_write_mstatus(mstatus.value);
+}
+
+__always_inline
+void csr_write_mstatus_spie(bool enable)
+{
+	struct mstatus mstatus;
+
+	mstatus.value = csr_read_mstatus();
+	mstatus.spie = enable;
+	csr_write_mstatus(mstatus.value);
+}
+
+__always_inline
+void csr_write_mstatus_spp(bool enable)
+{
+	struct mstatus mstatus;
+
+	mstatus.value = csr_read_mstatus();
+	mstatus.spp = enable;
+	csr_write_mstatus(mstatus.value);
+}
+
+__always_inline
+void csr_write_mstatus_sum(bool enable)
+{
+	struct mstatus mstatus;
+
+	mstatus.value = csr_read_mstatus();
+	mstatus.sum = enable;
+	csr_write_mstatus(mstatus.value);
+}
+
+__always_inline
+void csr_write_mstatus_sd(bool enable)
+{
+	struct mstatus mstatus;
+
+	mstatus.value = csr_read_mstatus();
+	mstatus.sd = enable;
+	csr_write_mstatus(mstatus.value);
+}
+
+__always_inline
+void csr_write_mstatus_mie(bool enable)
+{
+	struct mstatus mstatus;
+
+	mstatus.value = csr_read_mstatus();
+	mstatus.mie = enable;
 	csr_write_mstatus(mstatus.value);
 }
 
@@ -170,9 +453,149 @@ void csr_write_mstatus_mpie(bool enable)
 }
 
 __always_inline
+void csr_write_mstatus_mpp(enum mstatus_mpp mpp)
+{
+	struct mstatus mstatus;
+
+	mstatus.value = csr_read_mstatus();
+	mstatus.mpp = mpp;
+	csr_write_mstatus(mstatus.value);
+}
+
+__always_inline
+void csr_write_mstatus_mprv(bool enable)
+{
+	struct mstatus mstatus;
+
+	mstatus.value = csr_read_mstatus();
+	mstatus.mprv = enable;
+	csr_write_mstatus(mstatus.value);
+}
+
+__always_inline
+void csr_write_mstatus_mxr(bool enable)
+{
+	struct mstatus mstatus;
+
+	mstatus.value = csr_read_mstatus();
+	mstatus.mxr = enable;
+	csr_write_mstatus(mstatus.value);
+}
+
+__always_inline
+void csr_write_mstatus_fs(enum mstatus_fs fs)
+{
+	struct mstatus mstatus;
+
+	mstatus.value = csr_read_mstatus();
+	mstatus.fs = fs;
+	csr_write_mstatus(mstatus.value);
+}
+
+__always_inline
+void csr_write_mstatus_xs(enum mstatus_xs xs)
+{
+	struct mstatus mstatus;
+
+	mstatus.value = csr_read_mstatus();
+	mstatus.xs = xs;
+	csr_write_mstatus(mstatus.value);
+}
+
+__always_inline
 void csr_write_mie(uint64 x)
 {
 	asm volatile("csrw mie, %0" : : "r" (x));
+}
+
+__always_inline
+void csr_write_mie_usie(bool enable)
+{
+	struct mie mie;
+
+	mie.value = csr_read_mie();
+	mie.usie = enable;
+	csr_write_mie(mie.value);
+}
+
+__always_inline
+void csr_write_mie_utie(bool enable)
+{
+	struct mie mie;
+
+	mie.value = csr_read_mie();
+	mie.utie = enable;
+	csr_write_mie(mie.value);
+}
+
+__always_inline
+void csr_write_mie_ueie(bool enable)
+{
+	struct mie mie;
+
+	mie.value = csr_read_mie();
+	mie.ueie = enable;
+	csr_write_mie(mie.value);
+}
+
+__always_inline
+void csr_write_mie_ssie(bool enable)
+{
+	struct mie mie;
+
+	mie.value = csr_read_mie();
+	mie.ssie = enable;
+	csr_write_mie(mie.value);
+}
+
+__always_inline
+void csr_write_mie_stie(bool enable)
+{
+	struct mie mie;
+
+	mie.value = csr_read_mie();
+	mie.stie = enable;
+	csr_write_mie(mie.value);
+}
+
+__always_inline
+void csr_write_mie_seie(bool enable)
+{
+	struct mie mie;
+
+	mie.value = csr_read_mie();
+	mie.seie = enable;
+	csr_write_mie(mie.value);
+}
+
+__always_inline
+void csr_write_mie_msie(bool enable)
+{
+	struct mie mie;
+
+	mie.value = csr_read_mie();
+	mie.msie = enable;
+	csr_write_mie(mie.value);
+}
+
+__always_inline
+void csr_write_mie_mtie(bool enable)
+{
+	struct mie mie;
+
+	mie.value = csr_read_mie();
+	mie.mtie = enable;
+	csr_write_mie(mie.value);
+}
+
+__always_inline
+void csr_write_mie_meie(bool enable)
+{
+	struct mie mie;
+
+	mie.value = csr_read_mie();
+	mie.meie = enable;
+	csr_write_mie(mie.value);
 }
 
 __always_inline
