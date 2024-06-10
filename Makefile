@@ -4,7 +4,7 @@ LD = riscv64-linux-gnu-ld
 QEMU = qemu-system-riscv64
 
 CFLAGS = -Wall -Wextra
-CFLAGS += -O0 -ggdb
+CFLAGS += -O0 -ggdb3
 CFLAGS += -nostdlib -mcmodel=medany
 CFLAGS += -I include
 
