@@ -6,7 +6,8 @@
 kernelvec:
 	csrw mscratch, a0 # save value of a0 to mscratch
 
-	la a0, trapframe # load value of trapframe variable
+	la a0, current_task # load address of current task struct pointer
+	ld a0, 0(a0) # load address of current task struct variable
 
         # save the registers.
 	sd ra,	  0(a0)
@@ -50,9 +51,11 @@ kernelvec:
 	la sp, _kernel_stack # load address of _kernel_stack
 	li t0, 4096
 	add sp, sp, t0 # set stack for kernel
+
 	call trap_handler
 
-	la a0, trapframe # load address of trapframe to a0
+	la a0, current_task # load address of current task struct
+	ld a0, 0(a0)
 
 	ld t0, 72(a0) # load value of a0 from trapframe to t0
 	csrw mscratch, t0 # save value of a0 to mscratch

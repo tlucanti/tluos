@@ -5,9 +5,9 @@
 #include <sys/console.h>
 #include <sys/riscv.h>
 
-#define syscall_num() trapframe.a7
-#define syscall_arg(n) trapframe.a##n
-#define syscall_ret() trapframe.a0
+#define syscall_num() current_task->trapframe.a7
+#define syscall_arg(n) current_task->trapframe.a##n
+#define syscall_ret() current_task->trapframe.a0
 
 extern struct frame trapframe;
 
