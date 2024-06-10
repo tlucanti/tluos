@@ -2,7 +2,16 @@
 #ifndef KERNEL_TASK_H
 #define KERNEL_TASK_H
 
+#include <kernel/attributes.h>
 #include <kernel/types.h>
+
+#define USER_TASKS_MAX 32
+
+enum task_state {
+	TASK_STATE_NONE,
+	TASK_STATE_RUNNING,
+	TASK_STATE_SLEEPING,
+};
 
 struct frame {
 	uint64 ra;
@@ -37,6 +46,16 @@ struct frame {
 	uint64 t5;
 	uint64 t6;
 };
+
+struct task {
+	struct frame trapframe;
+	enum task_state state;
+	uint64 pc;
+	uint8 user_stack[4096] __aligned(16);
+};
+
+extern struct task tasks[USER_TASKS_MAX];
+extern struct task *current_task;
 
 #endif /* KERNEL_CONTEXT_H */
 

@@ -24,6 +24,7 @@ obj += kernel/console.o
 obj += kernel/kernelvec.o
 obj += kernel/trap.o
 obj += kernel/syscall.o
+obj += kernel/task.o
 
 obj += user/usys.o
 obj += user/init.o
