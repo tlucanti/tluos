@@ -14,7 +14,7 @@ extern struct frame trapframe;
 static uint sys_getcpu(void);
 static void sys_print(const char *s);
 int sys_spawn(void (*task)(void));
-static void sys_sched(void);
+void sys_sched(void);
 
 void syscall(void)
 {
@@ -67,7 +67,7 @@ int sys_spawn(void (*task)(void))
 	return 1; // could not found a slot for new task
 }
 
-static void sys_sched(void)
+void sys_sched(void)
 {
 	uint task_id = ((void *)current_task - (void *)tasks) / sizeof(struct task);
 

@@ -8,6 +8,7 @@
 __aligned(16) uint8 _kernel_stack[4096];
 
 extern void trap_init(void);
+extern void timer_init(void);
 extern __noreturn void start_userspace(void);
 extern int sys_spawn(void (*task)());
 extern void sys_sched(void);
@@ -38,5 +39,7 @@ void start_user(void)
         current_task = &tasks[0];
         sys_spawn(init); // fill task struct for init task
         current_task->state = TASK_STATE_RUNNING;
+
+	timer_init();
         rv_mret();
 }
