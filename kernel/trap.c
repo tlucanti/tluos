@@ -1,7 +1,7 @@
 
+#include <kernel/kprint.h>
 #include <kernel/ktime.h>
 #include <kernel/task.h>
-#include <sys/console.h>
 #include <sys/riscv.h>
 
 extern void kernelvec(void);
@@ -18,15 +18,13 @@ void trap_handler(void)
 		csr_write_mepc(csr_read_mepc() + 4);
 		break;
 	case MCAUSE_MACHINE_TIMER_INTERRUPT:
-		console_puts("timer interrupt\n");
+		klog("timer interrupt");
 		sys_sched();
 		ktimer_set(ktime() + (uint64)1e7);
 		csr_write_mepc(csr_read_mepc() + 4);
 		break;
 	default:
-		console_puts("unexpected kernel trap: ");
-		console_putuint(csr_read_mcause());
-		console_putc('\n');
+		klog("unexpected kernel trap: %lu", csr_read_mcause());
 		break;
 	}
 }
@@ -42,4 +40,3 @@ void timer_init(void)
 	csr_write_mstatus_mie(true);
 	csr_write_mie_mtie(true);
 }
-
