@@ -1,5 +1,6 @@
 
 #include <kernel/attributes.h>
+#include <kernel/kprint.h>
 #include <kernel/task.h>
 #include <kernel/types.h>
 #include <sys/console.h>
@@ -19,7 +20,7 @@ __noreturn
 void start_kernel(void)
 {
 	console_init();
-	console_puts("kernel starting\n");
+	klog("starting kernel");
 	trap_init();
 
 	start_user();
@@ -32,13 +33,14 @@ void start_user(void)
         csr_write_mstatus_mpp(MSTATUS_MPP_M); // set previous mode to M mode for mret
         csr_write_mstatus_mpie(true); // set previous interrupt enable to true from mret
 
-        for (int i = 0; i < USER_TASKS_MAX; i++) {
+        for (uint i = 0; i < USER_TASKS_MAX; i++) {
                 tasks[i].state = TASK_STATE_NONE;
         }
 
         current_task = &tasks[0];
         sys_spawn(init); // fill task struct for init task
         current_task->state = TASK_STATE_RUNNING;
+	klog("starting init");
 
 	timer_init();
         rv_mret();
