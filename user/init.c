@@ -21,7 +21,6 @@ static void task(void)
 	while (true) {
 		print("running task ...\n");
 		sleep(1e8);
-		sched();
 	}
 }
 
@@ -34,6 +33,5 @@ void init(void)
 	while (true) {
 		print("running init ...\n");
 		sleep(1e8);
-		sched();
 	}
 }
