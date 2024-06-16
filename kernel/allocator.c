@@ -62,8 +62,9 @@ found:
 void kpage_free(void *page, uint order)
 {
 	uint64 num_pages = (uint64)2 << order;
+	uint64 i = (page - (void *)heap_start) / PAGE_SIZE;
 
-	for (uint64 i = 0; i < num_pages; i++) {
+	for (; i < num_pages; i++) {
 		occupied_pages[i] = false;
 	}
 }
