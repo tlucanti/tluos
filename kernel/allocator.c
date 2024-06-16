@@ -1,36 +1,70 @@
 
+#include <kernel/attributes.h>
 #include <kernel/types.h>
+#include <container/slist.h>
 
 #define HEAP_SIZE_PAGES 128
 #define PAGE_SIZE 4096
 
-extern uint8 heap_start[];
+__aligned(4096) extern uint8 heap_start[];
+static bool occupied_pages[HEAP_SIZE_PAGES];
 
-static void *free_list[HEAP_SIZE_PAGES];
-static uint free_list_end = 0; // points past the end of last free page
-
-void kalloc_init(void)
+void kpage_alloc_init(void)
 {
-	for (uint i = 0; i < HEAP_SIZE_PAGES; i++) {
-		free_list[i] = heap_start + (i * PAGE_SIZE);
+	for (uint64 i = 0; i < HEAP_SIZE_PAGES; i++) {
+		occupied_pages[i] = false;
 	}
-
-	free_list_end = HEAP_SIZE_PAGES;
 }
 
-void *page_alloc(void)
+/**
+ * kpage_alloc() - allocate physical pages
+ *
+ * @param order: allocate 2 ^ order physical pages
+ * @return: pointer to allocated memory
+ */
+void *kpage_alloc(uint order)
 {
-	if (free_list_end == 0) {
-		return NULL;
+	const uint64 num_pages = (uint64)2 << order;
+	uint64 start = 0;
+	uint64 end;
+	uint64 occupied = 0;
+	void *ret;
+
+	/**
+	 * algorithm work as follows: we have sliding window of size @num_pages
+	 * from @start to @end. And maintaining number of free pages in this
+	 * window in @occupied. As soon as @occupied drops to zero - we found
+	 * countonous interval of non occupied pages
+	 */
+	for (end = 0; end < num_pages; end++) {
+		occupied += occupied_pages[end];
 	}
 
-	--free_list_end;
-	return (void *)free_list[free_list_end * PAGE_SIZE];
+	while (end < HEAP_SIZE_PAGES) {
+		if (occupied == 0)
+			goto found;
+		occupied += occupied_pages[end];
+		occupied -= occupied_pages[start];
+		start++;
+		end++;
+	}
+
+	return NULL; // no memory
+
+found:
+	ret = heap_start + start * PAGE_SIZE;
+	for (; start != end; start++) {
+		occupied_pages[start] = true;
+	}
+	return ret;
 }
 
-void page_free(void *page)
+void kpage_free(void *page, uint order)
 {
-	free_list[free_list_end] = page;
-	free_list_end++;
+	uint64 num_pages = (uint64)2 << order;
+
+	for (uint64 i = 0; i < num_pages; i++) {
+		occupied_pages[i] = false;
+	}
 }
 
