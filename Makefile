@@ -28,6 +28,8 @@ obj += kernel/trap.o
 obj += kernel/syscall.o
 obj += kernel/task.o
 
+obj += kernel/allocator.o
+
 obj += user/usys.o
 obj += user/init.o
 
