@@ -96,24 +96,51 @@ enum mcause_exception_code {
 	MCAUSE_STORE_PAGE_FAULT			= 14,
 };
 
-/**
- * RISC-V instructions mapping
- */
+enum sstatus_fs {
+	SSTATUS_FS_OFF     = 0b00,
+	SSTATUS_FS_INITIAL = 0b01,
+	SSTATUS_FS_CLEAN   = 0b10,
+	SSTATUS_FS_DIRTY   = 0b11,
+};
+
+enum sstatus_xs {
+	SSTATUS_XS_ALL_OFF    = 0b00,
+	SSTATUS_XS_SOME_ON    = 0b01,
+	SSTATUS_XS_SOME_CLEAN = 0b10,
+	SSTATUS_XS_SOME_DIRTY = 0b11,
+};
+
+// ****************************************************************************
+// RISC-V instructions mapping
+// ****************************************************************************
+
 void rv_ecall(void);
 void rv_wfi(void);
 __noreturn void rv_mret(void);
 
+// ****************************************************************************
+// Machine mode registers
+// ****************************************************************************
+
 /**
- * Machine mode registers
+ * machine information registers
  */
 
-/* machine information registers */
+/* read registers */
 uint64 csr_read_mvendorid(void);
+
 uint64 csr_read_marchid(void);
+
 uint64 csr_read_mimpid(void);
+
 uint64 csr_read_mhartid(void);
 
-/* machine trap setup */
+
+/**
+ * machine trap setup
+ */
+
+/* read registers */
 uint64 csr_read_mstatus(void);
 	bool csr_read_mstatus_uie(void);
 	bool csr_read_mstatus_upie(void);
@@ -129,8 +156,10 @@ uint64 csr_read_mstatus(void);
 	bool csr_read_mstatus_mxr(void);
 	enum mstatus_fs csr_read_mstatus_fs(void);
 	enum mstatus_xs csr_read_mstatus_xs(void);
+
 uint64 csr_read_misa(void);
 	struct misa_extensions csr_read_misa_extensions(void);
+
 uint64 csr_read_mie(void);
 	bool csr_read_mie_usie(void);
 	bool csr_read_mie_utie(void);
@@ -141,10 +170,13 @@ uint64 csr_read_mie(void);
 	bool csr_read_mie_msie(void);
 	bool csr_read_mie_mtie(void);
 	bool csr_read_mie_meie(void);
-uint64 csr_read_mcounteren(void);
 
+
+/* write registers */
 void csr_write_medeleg(uint64 x);
+
 void csr_write_mideleg(uint64 x);
+
 void csr_write_mstatus(uint64 x);
 	void csr_write_mstatus_uie(bool enable);
 	void csr_write_mstatus_upie(bool enable);
@@ -160,6 +192,7 @@ void csr_write_mstatus(uint64 x);
 	void csr_write_mstatus_mxr(bool enable);
 	void csr_write_mstatus_fs(enum mstatus_fs fs);
 	void csr_write_mstatus_xs(enum mstatus_xs xs);
+
 void csr_write_mie(uint64 x);
 	void csr_write_mie_usie(bool enable);
 	void csr_write_mie_utie(bool enable);
@@ -170,54 +203,150 @@ void csr_write_mie(uint64 x);
 	void csr_write_mie_msie(bool enable);
 	void csr_write_mie_mtie(bool enable);
 	void csr_write_mie_meie(bool enable);
+
 void csr_write_mtvec(uint64 x);
-void csr_write_mcounteren(uint64 x);
 
-/* machine trap handling */
-uint64 csr_read_mscratch(void);
-uint64 csr_read_mepc(void);
-uint64 csr_read_mcause(void);
-uint64 csr_read_mtval(void);
-uint64 csr_read_mip(void);
-
-void csr_write_mscratch(uint64 x);
-void csr_write_mepc(uint64 x);
-
-/* machine protection and translation */
-void csr_write_pmpcfg0(uint64 x);
-
-/* machine counter/timers */
-uint64 csr_read_mcycle(void);
 
 /**
- * Supervisor mode registers
+ * machine trap handling
  */
 
-/* supervisor trap setup */
+/* read registers */
+uint64 csr_read_mscratch(void);
+
+uint64 csr_read_mepc(void);
+
+uint64 csr_read_mcause(void);
+
+uint64 csr_read_mtval(void);
+
+
+/* write registers */
+void csr_write_mscratch(uint64 x);
+
+void csr_write_mepc(uint64 x);
+
+
+/**
+ * machine protection and translation
+ */
+
+/* write registers */
+void csr_write_pmpcfg0(uint64 x);
+	void csr_write_pmp0cfg(uint8 flags);
+	void csr_write_pmp1cfg(uint8 flags);
+	void csr_write_pmp2cfg(uint8 flags);
+	void csr_write_pmp3cfg(uint8 flags);
+	void csr_write_pmp4cfg(uint8 flags);
+	void csr_write_pmp5cfg(uint8 flags);
+	void csr_write_pmp6cfg(uint8 flags);
+	void csr_write_pmp7cfg(uint8 flags);
+
+void csr_write_pmpcfg2(uint64 x);
+	void csr_write_pmp8cfg(uint8 flags);
+	void csr_write_pmp9cfg(uint8 flags);
+	void csr_write_pmp10cfg(uint8 flags);
+	void csr_write_pmp11cfg(uint8 flags);
+	void csr_write_pmp12cfg(uint8 flags);
+	void csr_write_pmp13cfg(uint8 flags);
+	void csr_write_pmp14cfg(uint8 flags);
+	void csr_write_pmp15cfg(uint8 flags);
+
+void csr_write_pmpaddr0(uint64 address);
+void csr_write_pmpaddr1(uint64 address);
+void csr_write_pmpaddr2(uint64 address);
+void csr_write_pmpaddr3(uint64 address);
+void csr_write_pmpaddr4(uint64 address);
+void csr_write_pmpaddr5(uint64 address);
+void csr_write_pmpaddr6(uint64 address);
+void csr_write_pmpaddr7(uint64 address);
+void csr_write_pmpaddr8(uint64 address);
+void csr_write_pmpaddr9(uint64 address);
+void csr_write_pmpaddr10(uint64 address);
+void csr_write_pmpaddr11(uint64 address);
+void csr_write_pmpaddr12(uint64 address);
+void csr_write_pmpaddr13(uint64 address);
+void csr_write_pmpaddr14(uint64 address);
+void csr_write_pmpaddr15(uint64 address);
+
+
+// ****************************************************************************
+// Supervisor mode registers
+// ****************************************************************************
+
+/**
+ * supervisor trap setup
+ */
+
+/* read registers */
 uint64 csr_read_sstatus(void);
+	bool csr_read_sstatus_uie(void);
+	bool csr_read_sstatus_upie(void);
+	bool csr_read_sstatus_sie(void);
+	bool csr_read_sstatus_spie(void);
+	bool csr_read_sstatus_spp(void);
+	bool csr_read_sstatus_sum(void);
+	bool csr_read_sstatus_sd(void);
+	bool csr_read_sstatus_mxr(void);
+	enum sstatus_fs csr_read_sstatus_fs(void);
+	enum sstatus_xs csr_read_sstatus_xs(void);
+
 uint64 csr_read_sie(void);
-uint64 csr_read_scounteren(void);
+	bool csr_read_sie_usie(void);
+	bool csr_read_sie_utie(void);
+	bool csr_read_sie_ueie(void);
+	bool csr_read_sie_stie(void);
+	bool csr_read_sie_seie(void);
+	bool csr_read_sie_ssie(void);
 
+
+/* write registers */
 void csr_write_sedeleg(uint64 x);
+
 void csr_write_sideleg(uint64 x);
+
 void csr_write_sie(uint64 x);
+
 void csr_write_stvec(uint64 x);
-void csr_write_scounteren(uint64 x);
 
-/* supervisor trap handling */
+
+/**
+ * supervisor trap handling
+ */
+
+/* read registers */
 uint64 csr_read_sscratch(void);
-uint64 csr_read_sepc(void);
-uint64 csr_read_scause(void);
-uint64 csr_read_stval(void);
-uint64 csr_read_sip(void);
 
+uint64 csr_read_sepc(void);
+
+uint64 csr_read_scause(void);
+
+uint64 csr_read_stval(void);
+
+
+/* write registers */
 void csr_write_sscratch(uint64 x);
+
 void csr_write_sepc(uint64 x);
 
-/* supervisor protection and translation */
-uint64 csr_read_satp(void);
 
+/**
+ * supervisor protection and translation
+ */
+
+/* read registers */
+uint64 csr_read_satp(void);
+	uint64 csr_read_satp_ppn(void);
+	uint64 csr_read_satp_asid(void);
+	bool csr_read_satp_mode(void);
+
+
+/* write registers */
 void csr_write_satp(uint64 x);
+	void csr_write_satp_ppb(uint64 x);
+	void csr_write_satp_asid(uint64 x);
+	void csr_write_satp_mode(bool x);
+
 
 #endif /* SYS_RISCV_H */
 

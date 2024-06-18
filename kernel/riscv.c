@@ -55,6 +55,79 @@ struct mie {
 	};
 };
 
+struct pmpcfg0 {
+	union {
+		uint64 value;
+		struct {
+			uint8 pmp0cfg;
+			uint8 pmp1cfg;
+			uint8 pmp2cfg;
+			uint8 pmp3cfg;
+			uint8 pmp4cfg;
+			uint8 pmp5cfg;
+			uint8 pmp6cfg;
+			uint8 pmp7cfg;
+		};
+	};
+};
+
+struct pmpcfg2 {
+	union {
+		uint64 value;
+		struct {
+			uint8 pmp8cfg;
+			uint8 pmp9cfg;
+			uint8 pmp10cfg;
+			uint8 pmp11cfg;
+			uint8 pmp12cfg;
+			uint8 pmp13cfg;
+			uint8 pmp14cfg;
+			uint8 pmp15cfg;
+		};
+	};
+};
+
+struct sstatus {
+	union {
+		uint64 value;
+		struct {
+			uint64 uie  : 1;
+			uint64 sie  : 1;
+			uint64      : 2;
+			uint64 upie : 1;
+			uint64 spie : 1;
+			uint64      : 2;
+			uint64 spp  : 1;
+			uint64      : 4;
+			uint64 fs   : 2;
+			uint64 xs   : 2;
+			uint64      : 1;
+			uint64 sum  : 1;
+			uint64 mxr  : 1;
+			uint64      : 12;
+			uint64 uxl  : 2;
+			uint64      : 29;
+			uint64 sd   : 1;
+		};
+	};
+};
+
+struct sie {
+	union {
+		uint64 value;
+		struct {
+			uint64 usie : 1;
+			uint64 ssie : 1;
+			uint64      : 2;
+			uint64 utie : 1;
+			uint64 stie : 1;
+			uint64      : 2;
+			uint64 ueie : 1;
+			uint64 seie : 1;
+		};
+	};
+};
+
 /**
  * RISC-V instructions mapping
  */
@@ -335,14 +408,6 @@ bool csr_read_mie_meie(void)
 	return mie.meie;
 }
 
-__always_inline
-uint64 csr_read_mcounteren(void)
-{
-	uint64 x;
-	asm volatile("csrr %0, mcounteren" : "=r" (x) );
-	return x;
-}
-
 
 __always_inline
 void csr_write_medeleg(uint64 x)
@@ -604,12 +669,6 @@ void csr_write_mtvec(uint64 x)
 	asm volatile("csrw mtvec, %0" : : "r" (x));
 }
 
-__always_inline
-void csr_write_mcounteren(uint64 x)
-{
-	asm volatile("csrw mcounteren, %0" : : "r" (x));
-}
-
 /* machine trap handling */
 
 __always_inline
@@ -644,14 +703,6 @@ uint64 csr_read_mtval(void)
 	return x;
 }
 
-__always_inline
-uint64 csr_read_mip(void)
-{
-	uint64 x;
-	asm volatile("csrr %0, mip" : "=r" (x) );
-	return x;
-}
-
 
 __always_inline
 void csr_write_mscratch(uint64 x)
@@ -667,21 +718,306 @@ void csr_write_mepc(uint64 x)
 
 /* machine protection and translation */
 
+static __always_inline
+uint64 csr_read_pmpcfg0(void)
+{
+	uint64 x;
+	asm volatile("csrr %0, pmpcfg0" : "=r" (x) );
+	return x;
+}
+
+static __always_inline
+uint64 csr_read_pmpcfg2(void)
+{
+	uint64 x;
+	asm volatile("csrr %0, pmpcfg2" : "=r" (x) );
+	return x;
+}
+
 __always_inline
 void csr_write_pmpcfg0(uint64 x)
 {
 	asm volatile("csrw pmpcfg0, %0" : : "r" (x));
 }
 
-/* machine counter/timers */
+__always_inline
+void csr_write_pmpcfg2(uint64 x)
+{
+	asm volatile("csrw pmpcfg2, %0" : : "r" (x));
+}
 
 __always_inline
-uint64 csr_read_mcycle(void)
+void csr_write_pmp0cfg(uint8 flags)
 {
-	uint64 x;
-	asm volatile("csrr %0, mcycle" : "=r" (x) );
-	return x;
+	struct pmpcfg0 pmpcfg0;
+
+	pmpcfg0.value = csr_read_pmpcfg0();
+	pmpcfg0.pmp0cfg = flags;
+	csr_write_pmpcfg0(pmpcfg0.value);
 }
+
+__always_inline
+void csr_write_pmp1cfg(uint8 flags)
+{
+	struct pmpcfg0 pmpcfg0;
+
+	pmpcfg0.value = csr_read_pmpcfg0();
+	pmpcfg0.pmp1cfg = flags;
+	csr_write_pmpcfg0(pmpcfg0.value);
+}
+
+__always_inline
+void csr_write_pmp2cfg(uint8 flags)
+{
+	struct pmpcfg0 pmpcfg0;
+
+	pmpcfg0.value = csr_read_pmpcfg0();
+	pmpcfg0.pmp2cfg = flags;
+	csr_write_pmpcfg0(pmpcfg0.value);
+}
+
+__always_inline
+void csr_write_pmp3cfg(uint8 flags)
+{
+	struct pmpcfg0 pmpcfg0;
+
+	pmpcfg0.value = csr_read_pmpcfg0();
+	pmpcfg0.pmp3cfg = flags;
+	csr_write_pmpcfg0(pmpcfg0.value);
+}
+
+__always_inline
+void csr_write_pmp4cfg(uint8 flags)
+{
+	struct pmpcfg0 pmpcfg0;
+
+	pmpcfg0.value = csr_read_pmpcfg0();
+	pmpcfg0.pmp4cfg = flags;
+	csr_write_pmpcfg0(pmpcfg0.value);
+}
+
+__always_inline
+void csr_write_pmp5cfg(uint8 flags)
+{
+	struct pmpcfg0 pmpcfg0;
+
+	pmpcfg0.value = csr_read_pmpcfg0();
+	pmpcfg0.pmp5cfg = flags;
+	csr_write_pmpcfg0(pmpcfg0.value);
+}
+
+__always_inline
+void csr_write_pmp6cfg(uint8 flags)
+{
+	struct pmpcfg0 pmpcfg0;
+
+	pmpcfg0.value = csr_read_pmpcfg0();
+	pmpcfg0.pmp6cfg = flags;
+	csr_write_pmpcfg0(pmpcfg0.value);
+}
+
+__always_inline
+void csr_write_pmp7cfg(uint8 flags)
+{
+	struct pmpcfg0 pmpcfg0;
+
+	pmpcfg0.value = csr_read_pmpcfg0();
+	pmpcfg0.pmp7cfg = flags;
+	csr_write_pmpcfg0(pmpcfg0.value);
+}
+
+__always_inline
+void csr_write_pmp8cfg(uint8 flags)
+{
+	struct pmpcfg2 pmpcfg2;
+
+	pmpcfg2.value = csr_read_pmpcfg2();
+	pmpcfg2.pmp8cfg = flags;
+	csr_write_pmpcfg0(pmpcfg2.value);
+}
+
+__always_inline
+void csr_write_pmp9cfg(uint8 flags)
+{
+	struct pmpcfg2 pmpcfg2;
+
+	pmpcfg2.value = csr_read_pmpcfg2();
+	pmpcfg2.pmp9cfg = flags;
+	csr_write_pmpcfg0(pmpcfg2.value);
+}
+
+__always_inline
+void csr_write_pmp10cfg(uint8 flags)
+{
+	struct pmpcfg2 pmpcfg2;
+
+	pmpcfg2.value = csr_read_pmpcfg2();
+	pmpcfg2.pmp10cfg = flags;
+	csr_write_pmpcfg0(pmpcfg2.value);
+}
+
+__always_inline
+void csr_write_pmp11cfg(uint8 flags)
+{
+	struct pmpcfg2 pmpcfg2;
+
+	pmpcfg2.value = csr_read_pmpcfg2();
+	pmpcfg2.pmp11cfg = flags;
+	csr_write_pmpcfg0(pmpcfg2.value);
+}
+
+__always_inline
+void csr_write_pmp12cfg(uint8 flags)
+{
+	struct pmpcfg2 pmpcfg2;
+
+	pmpcfg2.value = csr_read_pmpcfg2();
+	pmpcfg2.pmp12cfg = flags;
+	csr_write_pmpcfg0(pmpcfg2.value);
+}
+
+__always_inline
+void csr_write_pmp13cfg(uint8 flags)
+{
+	struct pmpcfg2 pmpcfg2;
+
+	pmpcfg2.value = csr_read_pmpcfg2();
+	pmpcfg2.pmp13cfg = flags;
+	csr_write_pmpcfg0(pmpcfg2.value);
+}
+
+__always_inline
+void csr_write_pmp14cfg(uint8 flags)
+{
+	struct pmpcfg2 pmpcfg2;
+
+	pmpcfg2.value = csr_read_pmpcfg2();
+	pmpcfg2.pmp14cfg = flags;
+	csr_write_pmpcfg0(pmpcfg2.value);
+}
+
+__always_inline
+void csr_write_pmp15cfg(uint8 flags)
+{
+	struct pmpcfg2 pmpcfg2;
+
+	pmpcfg2.value = csr_read_pmpcfg2();
+	pmpcfg2.pmp15cfg = flags;
+	csr_write_pmpcfg0(pmpcfg2.value);
+}
+
+__always_inline
+void csr_write_pmpaddr0(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr0, %0" : : "r" (address));
+}
+
+__always_inline
+void csr_write_pmpaddr1(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr1, %0" : : "r" (address));
+}
+
+__always_inline
+void csr_write_pmpaddr2(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr2, %0" : : "r" (address));
+}
+
+__always_inline
+void csr_write_pmpaddr3(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr3, %0" : : "r" (address));
+}
+
+__always_inline
+void csr_write_pmpaddr4(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr4, %0" : : "r" (address));
+}
+
+__always_inline
+void csr_write_pmpaddr5(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr5, %0" : : "r" (address));
+}
+
+__always_inline
+void csr_write_pmpaddr6(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr6, %0" : : "r" (address));
+}
+
+__always_inline
+void csr_write_pmpaddr7(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr7, %0" : : "r" (address));
+}
+
+__always_inline
+void csr_write_pmpaddr8(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr8, %0" : : "r" (address));
+}
+
+__always_inline
+void csr_write_pmpaddr9(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr9, %0" : : "r" (address));
+}
+
+__always_inline
+void csr_write_pmpaddr10(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr10, %0" : : "r" (address));
+}
+
+__always_inline
+void csr_write_pmpaddr11(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr11, %0" : : "r" (address));
+}
+
+__always_inline
+void csr_write_pmpaddr12(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr12, %0" : : "r" (address));
+}
+
+__always_inline
+void csr_write_pmpaddr13(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr13, %0" : : "r" (address));
+}
+
+__always_inline
+void csr_write_pmpaddr14(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr14, %0" : : "r" (address));
+}
+
+__always_inline
+void csr_write_pmpaddr15(uint64 address)
+{
+	address <<= 2;
+	asm volatile("csrw pmpaddr15, %0" : : "r" (address));
+}
+
 
 /**
  * Supervisor mode registers
@@ -698,6 +1034,86 @@ uint64 csr_read_sstatus(void)
 }
 
 __always_inline
+bool csr_read_sstatus_uie(void)
+{
+	struct sstatus sstatus;
+	sstatus.value = csr_read_sstatus();
+	return sstatus.uie;
+}
+
+__always_inline
+bool csr_read_sstatus_upie(void)
+{
+	struct sstatus sstatus;
+	sstatus.value = csr_read_sstatus();
+	return sstatus.upie;
+}
+
+__always_inline
+bool csr_read_sstatus_sie(void)
+{
+	struct sstatus sstatus;
+	sstatus.value = csr_read_sstatus();
+	return sstatus.sie;
+}
+
+__always_inline
+bool csr_read_sstatus_spie(void)
+{
+	struct sstatus sstatus;
+	sstatus.value = csr_read_sstatus();
+	return sstatus.spie;
+}
+
+__always_inline
+bool csr_read_sstatus_spp(void)
+{
+	struct sstatus sstatus;
+	sstatus.value = csr_read_sstatus();
+	return sstatus.spp;
+}
+
+__always_inline
+bool csr_read_sstatus_sum(void)
+{
+	struct sstatus sstatus;
+	sstatus.value = csr_read_sstatus();
+	return sstatus.sum;
+}
+
+__always_inline
+bool csr_read_sstatus_sd(void)
+{
+	struct sstatus sstatus;
+	sstatus.value = csr_read_sstatus();
+	return sstatus.sd;
+}
+
+__always_inline
+bool csr_read_sstatus_mxr(void)
+{
+	struct sstatus sstatus;
+	sstatus.value = csr_read_sstatus();
+	return sstatus.mxr;
+}
+
+__always_inline
+enum sstatus_fs csr_read_sstatus_fs(void)
+{
+	struct sstatus sstatus;
+	sstatus.value = csr_read_sstatus();
+	return sstatus.fs;
+}
+
+__always_inline
+enum sstatus_xs csr_read_sstatus_xs(void)
+{
+	struct sstatus sstatus;
+	sstatus.value = csr_read_sstatus();
+	return sstatus.xs;
+}
+
+__always_inline
 uint64 csr_read_sie(void)
 {
 	uint64 x;
@@ -706,11 +1122,51 @@ uint64 csr_read_sie(void)
 }
 
 __always_inline
-uint64 csr_read_scounteren(void)
+bool csr_read_sie_usie(void)
 {
-	uint64 x;
-	asm volatile("csrr %0, scounteren" : "=r" (x) );
-	return x;
+	struct sie sie;
+	sie.value = csr_read_sie();
+	return sie.usie;
+}
+
+__always_inline
+bool csr_read_sie_utie(void)
+{
+	struct sie sie;
+	sie.value = csr_read_sie();
+	return sie.utie;
+}
+
+__always_inline
+bool csr_read_sie_ueie(void)
+{
+	struct sie sie;
+	sie.value = csr_read_sie();
+	return sie.ueie;
+}
+
+__always_inline
+bool csr_read_sie_ssie(void)
+{
+	struct sie sie;
+	sie.value = csr_read_sie();
+	return sie.ssie;
+}
+
+__always_inline
+bool csr_read_sie_stie(void)
+{
+	struct sie sie;
+	sie.value = csr_read_sie();
+	return sie.stie;
+}
+
+__always_inline
+bool csr_read_sie_seie(void)
+{
+	struct sie sie;
+	sie.value = csr_read_sie();
+	return sie.seie;
 }
 
 
@@ -775,14 +1231,6 @@ uint64 csr_read_stval(void)
 {
 	uint64 x;
 	asm volatile("csrr %0, stval" : "=r" (x) );
-	return x;
-}
-
-__always_inline
-uint64 csr_read_sip(void)
-{
-	uint64 x;
-	asm volatile("csrr %0, sip" : "=r" (x) );
 	return x;
 }
 
