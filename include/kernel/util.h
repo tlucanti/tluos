@@ -6,7 +6,7 @@
 	({                             \
 		typeof(a) __a = (a);   \
 		typeof(b) __b = (b);   \
-		__a op __b ? __a : __b \
+		__a op __b ? __a : __b;\
 	})
 
 #define is_same(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
