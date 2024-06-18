@@ -6,5 +6,8 @@ SECTIONS {
 	.text : {
 		*(.text)
 	}
+
+	. = ALIGN(4096);
+	heap_start = .;
 }
 

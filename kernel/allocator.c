@@ -6,7 +6,7 @@
 #define HEAP_SIZE_PAGES 128
 #define PAGE_SIZE 4096
 
-__aligned(4096) extern uint8 heap_start[];
+__aligned(4096) extern uint8 heap_start[]; // defined in link.ld
 static bool occupied_pages[HEAP_SIZE_PAGES];
 
 void kpage_alloc_init(void)
