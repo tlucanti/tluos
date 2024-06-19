@@ -1,6 +1,7 @@
 
 #include <kernel/attributes.h>
 #include <kernel/types.h>
+#include <kernel/util.h>
 #include <sys/riscv.h>
 
 struct mstatus {
@@ -34,6 +35,7 @@ struct mstatus {
 		};
 	};
 };
+static_assert(sizeof(struct mstatus) == 8, "invalid mstatus struct");
 
 struct mie {
 	union {
@@ -54,6 +56,7 @@ struct mie {
 		};
 	};
 };
+static_assert(sizeof(struct mie) == 8, "invalid mie struct");
 
 struct pmpcfg0 {
 	union {
@@ -70,6 +73,7 @@ struct pmpcfg0 {
 		};
 	};
 };
+static_assert(sizeof(struct pmpcfg0) == 8, "invalid pmpcfg0 struct");
 
 struct pmpcfg2 {
 	union {
@@ -86,6 +90,7 @@ struct pmpcfg2 {
 		};
 	};
 };
+static_assert(sizeof(struct pmpcfg2) == 8, "invalid pmpcfg2 struct");
 
 struct sstatus {
 	union {
@@ -111,6 +116,7 @@ struct sstatus {
 		};
 	};
 };
+static_assert(sizeof(struct sstatus) == 8, "invalid sstatus struct");
 
 struct sie {
 	union {
@@ -127,6 +133,20 @@ struct sie {
 		};
 	};
 };
+static_assert(sizeof(struct sie) == 8, "invalid sie struct");
+
+struct satp {
+	union {
+		uint64 value;
+		struct {
+			uint64 ppn  : 44;
+			uint64 asid : 16;
+			uint64 mode : 4;
+		};
+	};
+};
+static_assert(sizeof(struct satp) == 8, "invalid satp struct");
+
 
 /**
  * RISC-V instructions mapping
@@ -1257,8 +1277,64 @@ uint64 csr_read_satp(void)
 }
 
 __always_inline
+uint64 csr_read_satp_ppn(void)
+{
+	struct satp satp;
+	satp.value = csr_read_satp();
+	return satp.ppn;
+}
+
+__always_inline
+uint64 csr_read_satp_asid(void)
+{
+	struct satp satp;
+	satp.value = csr_read_satp();
+	return satp.asid;
+}
+
+__always_inline
+enum satp_mode csr_read_satp_mode(void)
+{
+	struct satp satp;
+	satp.value = csr_read_satp();
+	return satp.mode;
+}
+
+
+__always_inline
 void csr_write_satp(uint64 x)
 {
 	asm volatile("csrw satp, %0" : : "r" (x));
 }
+
+__always_inline
+void csr_write_satp_ppn(uint64 x)
+{
+	struct satp satp;
+
+	satp.value = csr_read_satp();
+	satp.ppn = x;
+	csr_write_satp(satp.value);
+}
+
+__always_inline
+void csr_write_satp_asid(uint64 x)
+{
+	struct satp satp;
+
+	satp.value = csr_read_satp();
+	satp.asid = x;
+	csr_write_satp(satp.value);
+}
+
+__always_inline
+void csr_write_satp_mode(enum satp_mode mode)
+{
+	struct satp satp;
+
+	satp.value = csr_read_satp();
+	satp.mode = mode;
+	csr_write_satp(satp.value);
+}
+
 
