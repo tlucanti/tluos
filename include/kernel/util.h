@@ -40,6 +40,10 @@ typedef __builtin_va_list va_list;
 #define va_copy(dst, src) __builtin_va_copy(dst, src)
 #endif
 
+#ifndef static_assert
+# define static_assert _Static_assert
+#endif
+
 
 #endif /* KERNEL_UTIL_H */
 

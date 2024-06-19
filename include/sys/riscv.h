@@ -110,6 +110,12 @@ enum sstatus_xs {
 	SSTATUS_XS_SOME_DIRTY = 0b11,
 };
 
+enum satp_mode {
+	SATP_MODE_TRANSLATION_DISABLED = 0,
+	SATP_MODE_39_BIT_VIRTUAL_ADDRESS = 8,
+	SATP_MODE_48_BIT_VIRTUAL_ADDRESS = 9,
+};
+
 // ****************************************************************************
 // RISC-V instructions mapping
 // ****************************************************************************
@@ -338,14 +344,14 @@ void csr_write_sepc(uint64 x);
 uint64 csr_read_satp(void);
 	uint64 csr_read_satp_ppn(void);
 	uint64 csr_read_satp_asid(void);
-	bool csr_read_satp_mode(void);
+	enum satp_mode csr_read_satp_mode(void);
 
 
 /* write registers */
 void csr_write_satp(uint64 x);
-	void csr_write_satp_ppb(uint64 x);
+	void csr_write_satp_ppn(uint64 x);
 	void csr_write_satp_asid(uint64 x);
-	void csr_write_satp_mode(bool x);
+	void csr_write_satp_mode(enum satp_mode);
 
 
 #endif /* SYS_RISCV_H */
