@@ -1,19 +1,43 @@
 
 #include <kernel/types.h>
 #include <kernel/attributes.h>
+#include <sys/kconsole.h>
 
 __aligned(16)
 uint8 _kernel_stack[4096];
 
-#define UART_BASE (volatile uint8 *)0x10000000
-
 void start_kernel(void)
 {
-	*UART_BASE = 'h';
-	*UART_BASE = 'e';
-	*UART_BASE = 'l';
-	*UART_BASE = 'l';
-	*UART_BASE = 'o';
-	*UART_BASE = '\n';
+	kconsole_init();
+
+	kconsole_puts("Hello, kernel\n");
+
+	while (true) {
+		char c;
+
+		c = kconsole_getc();
+		if (c == '\r') {
+			/*
+			 * when pressing Enter key - UART will receive \r
+			 * character, so we need to send \n instead to
+			 * write new line
+			 */
+			kconsole_putc('\n');
+		} else if (c == 127) {
+			/*
+			 * when pressing Backspace key - UART will receive
+			 * DEL character (ASCII 127 number), so to clear
+			 * last character - we should send \b to move cursor
+			 * to one position left, then send space to replace
+			 * last character with blank, and then send \b again
+			 * to move cursor to position before just printed
+			 * space
+			 */
+			kconsole_puts("\b \b");
+		} else {
+			/* otherwise - just send back what UART received */
+			kconsole_putc(c);
+		}
+	}
 }
 
