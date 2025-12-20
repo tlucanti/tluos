@@ -13,9 +13,23 @@ static inline uint8 read8(uint64 addr)
 	return *ptr;
 }
 
+static inline uint64 read64(uint64 addr)
+{
+	volatile uint64 *ptr = (uint64 *)addr;
+
+	return *ptr;
+}
+
 static inline void write8(uint64 addr, uint8 value)
 {
 	volatile uint8 *ptr = (uint8 *)addr;
+
+	*ptr = value;
+}
+
+static inline void write64(uint64 addr, uint64 value)
+{
+	volatile uint64 *ptr = (uint64 *)addr;
 
 	*ptr = value;
 }
