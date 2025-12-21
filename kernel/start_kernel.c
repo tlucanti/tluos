@@ -1,7 +1,9 @@
 
 #include <kernel/types.h>
 #include <kernel/attributes.h>
+
 #include <sys/kconsole.h>
+#include <sys/ktime.h>
 #include <sys/riscv.h>
 
 __aligned(16)
@@ -13,10 +15,14 @@ void start_kernel(void)
 {
 	kconsole_init();
 	trap_init();
+	ktime_init();
 
 	kconsole_puts("Hello, kernel\n");
 
 	rv_ecall();
+
+	/* set timer to fire in one second */
+	ktime_set_timer(1 * NS_IN_S);
 
 	while (true) {
 		char c;
