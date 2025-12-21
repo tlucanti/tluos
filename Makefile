@@ -24,6 +24,7 @@ obj += kernel/kconsole.o
 obj += kernel/main.o
 obj += kernel/ktime.o
 obj += kernel/panic.o
+obj += kernel/allocator.o
 
 obj += kernel/kernelvec.o
 obj += kernel/trap.o
