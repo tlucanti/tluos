@@ -23,6 +23,7 @@ obj += kernel/start_kernel.o
 obj += kernel/uart.o
 obj += kernel/kconsole.o
 obj += kernel/ktime.o
+obj += kernel/panic.o
 
 obj += kernel/kernelvec.o
 obj += kernel/trap.o
