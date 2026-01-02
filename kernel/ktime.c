@@ -13,21 +13,22 @@
 
 void ktime_init(void)
 {
-	aclint_init();
+	//aclint_init();
 
 	/* enable m-mode interrupts */
-	csr_write_mstatus_mie(true);
+	csr_write_sstatus_sie(true);
 
 	/* enable timer interrupts specifically */
-	csr_write_mie_mtie(true);
+	csr_write_sie_stie(true);
 }
 
 uint64 ktime_get(void)
 {
-	uint64 ticks = aclint_mtime_get();
+	//uint64 ticks = aclint_mtime_get();
 
 	/* aclint returns number of ticks, so convert them to nanoseconds */
-	return ticks & NS_IN_TICKS;
+	//return ticks & NS_IN_TICKS;
+	return csr_read_time() * NS_IN_TICKS;
 }
 
 void ktime_set_timer(uint64 ktime)
@@ -36,5 +37,6 @@ void ktime_set_timer(uint64 ktime)
 	uint64 ticks = ktime / NS_IN_TICKS;
 
 	/* set timer to fire in `ticks` ticks from now */
-	aclint_mtimecmp_set(aclint_mtime_get() + ticks);
+	//aclint_mtimecmp_set(aclint_mtime_get() + ticks);
+	csr_write_stimecmp(csr_read_time() + ticks);
 }

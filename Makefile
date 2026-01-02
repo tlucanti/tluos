@@ -4,7 +4,7 @@ LD   ?= riscv64-unknown-elf-ld
 GDB  ?= riscv64-unknown-elf-gdb
 QEMU ?= qemu-system-riscv64
 
-CFLAGS  += -Wall -Wextra
+CFLAGS  += -Wall -Wextra -Wno-main
 CFLAGS  += -O0 -g3
 CFLAGS  += -nostdlib
 CFLAGS  += -I include
@@ -32,10 +32,10 @@ obj += kernel/trap.o
 $(NAME): $(obj)
 	$(LD) $(LDFLAGS) -T link.lds -o $(NAME) $(obj)
 
-run: $(NAME)
+qemu: $(NAME)
 	$(QEMU) -nographic -machine virt,aclint=on -bios none -kernel $(NAME) -d guest_errors
 
-run-gdb: $(NAME)
+qemu-gdb: $(NAME)
 	$(QEMU) -nographic -machine virt,aclint=on -bios none -kernel $(NAME) -d int,guest_errors -s -S
 
 gdb:

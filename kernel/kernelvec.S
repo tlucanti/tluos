@@ -75,5 +75,5 @@ kernelvec:
 
 	addi sp, sp, 256
 
-	mret
+	sret
 

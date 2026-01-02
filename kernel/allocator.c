@@ -6,7 +6,6 @@
 #include <sys/allocator.h>
 #include <sys/kconsole.h>
 
-#define PAGE_SIZE 4096
 #define KERNEL_MEMORY_PAGES 4096
 
 __aligned(PAGE_SIZE)

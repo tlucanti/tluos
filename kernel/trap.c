@@ -10,23 +10,23 @@
 extern void kernelvec(void);
 
 enum {
-	MCAUSE_INTERRUPT_BIT    = BIT(63),
+	SCAUSE_INTERRUPT_BIT    = BIT(63),
 
-	MCAUSE_ECALL_FROM_MMODE = 11,
-	MCAUSE_MTIMER_INTERRUPT = 7 | MCAUSE_INTERRUPT_BIT,
+	SCAUSE_ECALL_FROM_SMODE = 9,
+	SCAUSE_STIMER_INTERRUPT = 5 | SCAUSE_INTERRUPT_BIT,
 };
 
 void trap_handler(void)
 {
-	switch (csr_read_mcause()) {
-	case MCAUSE_ECALL_FROM_MMODE:
+	switch (csr_read_scause()) {
+	case SCAUSE_ECALL_FROM_SMODE:
 		kconsole_puts("ecall trap\n");
 
 		/* return from trap to the next instruction after ecall one */
-		csr_write_mepc(csr_read_mepc() + 4);
+		csr_write_sepc(csr_read_sepc() + 4);
 		break;
 
-	case MCAUSE_MTIMER_INTERRUPT:
+	case SCAUSE_STIMER_INTERRUPT:
 		kconsole_puts("timer interrupt\n");
 
 		/* set next timer in about one second */
@@ -45,5 +45,5 @@ void trap_handler(void)
 
 void trap_init(void)
 {
-	csr_write_mtvec((uint64)kernelvec);
+	csr_write_stvec((uint64)kernelvec);
 }

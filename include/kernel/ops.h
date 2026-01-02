@@ -5,6 +5,7 @@
 #include <kernel/types.h>
 
 #define BIT(x) ((uint64)1 << (x))
+#define MASK(offset, width) ((BIT(width) - 1) << offset)
 
 static inline uint8 read8(uint64 addr)
 {
@@ -46,17 +47,18 @@ static inline uint64 extract(uint64 value, uint64 mask, uint8 offset)
 	return masked >> offset;
 }
 
-static inline uint64 deposit(uint64 orig, uint64 mask, uint8 offset, uint64 value)
+static inline uint64 deposit(uint64 orig, uint64 shift, uint8 width, uint64 value)
 {
-	if (offset >= 64) {
+	if (shift >= 64) {
 		return orig;
 	}
 
-	value <<= offset;
-	value &= mask;
+	/* remove extra bits from value */
+	value &= MASK(0, width);
+	value <<= shift;
 
 	/* clear bits that will be rewritten from orig */
-	orig &= ~mask;
+	orig &= ~MASK(0, width);
 
 	return orig | value;
 }

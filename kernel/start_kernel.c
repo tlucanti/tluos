@@ -11,19 +11,8 @@ uint8 _kernel_stack[4096];
 
 extern void trap_init(void);
 
-void start_kernel(void)
+static void echo_loop(void)
 {
-	kconsole_init();
-	trap_init();
-	ktime_init();
-
-	kconsole_puts("Hello, kernel\n");
-
-	rv_ecall();
-
-	/* set timer to fire in one second */
-	ktime_set_timer(1 * NS_IN_S);
-
 	while (true) {
 		char c;
 
@@ -51,5 +40,40 @@ void start_kernel(void)
 			kconsole_putc(c);
 		}
 	}
+}
+
+void main()
+{
+	trap_init();
+	ktime_init();
+
+	kconsole_init();
+
+	kconsole_puts("Hello, kernel\n");
+
+	/* check interrupt system */
+	rv_ecall();
+
+	/* set timer to fire in one second */
+	ktime_set_timer(1 * NS_IN_S);
+
+	echo_loop();
+}
+
+void start_kernel(void)
+{
+	csr_write_medeleg(MASK(0, 16));
+	csr_write_mideleg(MASK(0, 16));
+
+	csr_write_mstatus_mpp(MSTATUS_MPP_S);
+	csr_write_mepc((uint64)main);
+
+	csr_write_pmpaddr0(MASK(0, 54));
+	csr_write_pmp0cfg(PMPCFG_R | PMPCFG_W | PMPCFG_X | PMPCFG_TOR);
+
+	csr_write_menvcfg_stce(true);
+	csr_write_mcounteren_tm(true);
+
+	rv_mret();
 }
 
