@@ -38,6 +38,16 @@ void csr_write_mstatus_mpp(CsrMstatusMpp mpp)
 	csr_write_mstatus(mstatus);
 }
 
+void csr_write_medeleg(uint64 medeleg)
+{
+	asm volatile("csrw medeleg, %0" : : "r" (medeleg));
+}
+
+void csr_write_mideleg(uint64 mideleg)
+{
+	asm volatile("csrw mideleg, %0" : : "r" (mideleg));
+}
+
 void csr_write_mepc(uint64 mepc)
 {
 	asm volatile("csrw mepc, %0" : : "r" (mepc));

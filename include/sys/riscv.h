@@ -27,6 +27,8 @@ void   rv_mret(void);
 uint64 csr_read_mstatus(void);
 void   csr_write_mstatus(uint64 mstatus);
 void   csr_write_mstatus_mpp(CsrMstatusMpp mpp);
+void   csr_write_medeleg(uint64 medeleg);
+void   csr_write_mideleg(uint64 mideleg);
 void   csr_write_mepc(uint64 mepc);
 
 void   csr_write_pmpaddr0(uint64 pmpaddr0);
