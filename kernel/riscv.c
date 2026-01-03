@@ -11,6 +11,11 @@
 
 // riscv instructions mappings
 
+void rv_ecall(void)
+{
+	asm volatile("ecall");
+}
+
 void rv_mret(void)
 {
 	asm volatile("mret");
@@ -77,3 +82,23 @@ void csr_write_pmp0cfg(CsrPmpCfg pmp0cfg)
 	pmpcfg0 = deposit(pmpcfg0, PMP0CFG_OFFSET, PMP0CFG_WIDTH, pmp0cfg);
 	csr_write_pmpcfg0(pmpcfg0);
 }
+
+// s-mode csr mapings
+
+void csr_write_stvec(uint64 stvec)
+{
+	asm volatile("csrw stvec, %0" : : "r" (stvec));
+}
+
+uint64 csr_read_sepc(void)
+{
+	uint64 sepc;
+	asm volatile("csrr %0, sepc" : "=r" (sepc) );
+	return sepc;
+}
+
+void csr_write_sepc(uint64 sepc)
+{
+	asm volatile("csrw sepc, %0" : : "r" (sepc));
+}
+

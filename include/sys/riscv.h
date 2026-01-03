@@ -20,6 +20,7 @@ typedef enum {
 
 // riscv instructions mappings
 
+void   rv_ecall(void);
 void   rv_mret(void);
 
 // m-mode csr mapings
@@ -35,6 +36,13 @@ void   csr_write_pmpaddr0(uint64 pmpaddr0);
 uint64 csr_read_pmpcfg0(void);
 void   csr_write_pmpcfg0(uint64 pmpcfg0);
 void   csr_write_pmp0cfg(CsrPmpCfg pmp0cfg);
+
+// s-mode csr mapings
+
+void   csr_write_stvec(uint64 stvec);
+
+uint64 csr_read_sepc(void);
+void   csr_write_sepc(uint64 sepc);
 
 #endif /* SYS_RISCV_H */
 
