@@ -16,6 +16,9 @@ void start_kernel(void)
 	csr_write_medeleg(MASK(0, 16));
 	csr_write_mideleg(MASK(0, 16));
 
+	csr_write_menvcfg_stce(true);
+	csr_write_mcounteren_tm(true);
+
 	csr_write_mstatus_mpp(MSTATUS_MPP_S);
 	csr_write_mepc((uint64)main);
 

@@ -37,6 +37,13 @@ uint64 csr_read_pmpcfg0(void);
 void   csr_write_pmpcfg0(uint64 pmpcfg0);
 void   csr_write_pmp0cfg(CsrPmpCfg pmp0cfg);
 
+uint64 csr_read_mcounteren(void);
+void   csr_write_mcounteren(uint64 mcounteren);
+void   csr_write_mcounteren_tm(bool tm);
+uint64 csr_read_menvcfg(void);
+void   csr_write_menvcfg(uint64 menvcfg);
+void   csr_write_menvcfg_stce(bool stce);
+
 // s-mode csr mapings
 
 void   csr_write_stvec(uint64 stvec);
