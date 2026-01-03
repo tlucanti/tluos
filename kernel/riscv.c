@@ -15,6 +15,12 @@
 #define MENVCFG_STCE_OFFSET 63
 #define MENVCFG_STCE_WIDTH  1
 
+#define SSTATUS_SIE_OFFSET 1
+#define SSTATUS_SIE_WIDTH  1
+
+#define SIE_STIE_OFFSET    5
+#define SIE_STIE_WIDTH     1
+
 // riscv instructions mappings
 
 void rv_ecall(void)
@@ -136,6 +142,53 @@ void csr_write_stvec(uint64 stvec)
 	asm volatile("csrw stvec, %0" : : "r" (stvec));
 }
 
+uint64 csr_read_sstatus(void)
+{
+	uint64 x;
+	asm volatile("csrr %0, sstatus" : "=r" (x) );
+	return x;
+}
+
+void csr_write_sstatus(uint64 sstatus)
+{
+	asm volatile("csrw sstatus, %0" : : "r" (sstatus));
+}
+
+void csr_write_sstatus_sie(bool sie)
+{
+	uint64 x = csr_read_sstatus();
+
+	x = deposit(x, SSTATUS_SIE_OFFSET, SSTATUS_SIE_WIDTH, sie);
+	csr_write_sstatus(x);
+}
+
+uint64 csr_read_sie(void)
+{
+	uint64 x;
+	asm volatile("csrr %0, sie" : "=r" (x) );
+	return x;
+}
+
+void csr_write_sie(uint64 sie)
+{
+	asm volatile("csrw sie, %0" : : "r" (sie));
+}
+
+void csr_write_sie_stie(bool stie)
+{
+	uint64 x = csr_read_sie();
+
+	x = deposit(x, SIE_STIE_OFFSET, SIE_STIE_WIDTH, stie);
+	csr_write_sie(x);
+}
+
+uint64 csr_read_scause(void)
+{
+	uint64 x;
+	asm volatile("csrr %0, scause" : "=r" (x) );
+	return x;
+}
+
 uint64 csr_read_sepc(void)
 {
 	uint64 sepc;
@@ -148,3 +201,14 @@ void csr_write_sepc(uint64 sepc)
 	asm volatile("csrw sepc, %0" : : "r" (sepc));
 }
 
+uint64 csr_read_time(void)
+{
+	uint64 x;
+	asm volatile("csrr %0, time" : "=r" (x) );
+	return x;
+}
+
+void csr_write_stimecmp(uint64 stimecmp)
+{
+	asm volatile("csrw stimecmp, %0" : : "r" (stimecmp));
+}

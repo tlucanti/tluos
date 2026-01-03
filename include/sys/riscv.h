@@ -47,9 +47,18 @@ void   csr_write_menvcfg_stce(bool stce);
 // s-mode csr mapings
 
 void   csr_write_stvec(uint64 stvec);
-
+uint64 csr_read_sstatus(void);
+void   csr_write_sstatus(uint64 sstatus);
+void   csr_write_sstatus_sie(bool stie);
+uint64 csr_read_sie(void);
+void   csr_write_sie(uint64 sie);
+void   csr_write_sie_stie(bool stie);
+uint64 csr_read_scause(void);
 uint64 csr_read_sepc(void);
 void   csr_write_sepc(uint64 sepc);
+
+uint64 csr_read_time(void);
+void   csr_write_stimecmp(uint64 stimecmp);
 
 #endif /* SYS_RISCV_H */
 
