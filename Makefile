@@ -4,7 +4,7 @@ LD   ?= riscv64-unknown-elf-ld
 GDB  ?= riscv64-unknown-elf-gdb
 QEMU ?= qemu-system-riscv64
 
-CFLAGS  += -Wall -Wextra
+CFLAGS  += -Wall -Wextra -Wno-main
 CFLAGS  += -O0 -g3
 CFLAGS  += -nostdlib
 CFLAGS  += -I include
@@ -21,6 +21,7 @@ obj += kernel/riscv.o
 obj += kernel/start_kernel.o
 obj += kernel/uart.o
 obj += kernel/kconsole.o
+obj += kernel/main.o
 
 $(NAME): $(obj)
 	$(LD) $(LDFLAGS) -T link.ld -o $(NAME) $(obj)
