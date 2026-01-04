@@ -18,6 +18,11 @@ typedef enum {
 	PMPCFG_TOR = BIT(3),
 } CsrPmpCfg;
 
+typedef enum {
+	SATP_MODE_BARE = 0,
+	SATP_MODE_SV39 = 8,
+} CsrSatpMode;
+
 // riscv instructions mappings
 
 void   rv_ecall(void);
@@ -56,6 +61,9 @@ void   csr_write_sie_stie(bool stie);
 uint64 csr_read_scause(void);
 uint64 csr_read_sepc(void);
 void   csr_write_sepc(uint64 sepc);
+
+void   csr_write_satp(uint64 satp);
+void   csr_set_satp(CsrSatpMode mode, uint16 asid, uint64 ppn);
 
 uint64 csr_read_time(void);
 void   csr_write_stimecmp(uint64 stimecmp);

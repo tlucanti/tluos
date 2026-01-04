@@ -1,7 +1,11 @@
 
 #include <kernel/attributes.h>
 #include <kernel/types.h>
+#include <kernel/panic.h>
+
 #include <sys/riscv.h>
+
+#define SATP_PPN_MAX (BIT(44) - 1)
 
 #define MSTATUS_MPP_OFFSET 11
 #define MSTATUS_MPP_WIDTH  2
@@ -20,6 +24,12 @@
 
 #define SIE_STIE_OFFSET    5
 #define SIE_STIE_WIDTH     1
+
+#define SATP_ASID_OFFSET   44
+#define SATP_ASID_WIDTH    16
+
+#define SATP_MODE_OFFSET   60
+#define SATP_MODE_WIDTH    4
 
 // riscv instructions mappings
 
@@ -199,6 +209,26 @@ uint64 csr_read_sepc(void)
 void csr_write_sepc(uint64 sepc)
 {
 	asm volatile("csrw sepc, %0" : : "r" (sepc));
+}
+
+void csr_write_satp(uint64 satp)
+{
+	asm volatile("csrw satp, %0" : : "r" (satp));
+}
+
+void csr_set_satp(CsrSatpMode mode, uint16 asid, uint64 ppn)
+{
+	uint64 satp = 0;
+
+	if (ppn > SATP_PPN_MAX) {
+		panic("satp ppn too large");
+	}
+
+	satp |= ppn;
+	satp = deposit(satp, SATP_ASID_OFFSET, SATP_ASID_WIDTH, asid);
+	satp = deposit(satp, SATP_MODE_OFFSET, SATP_MODE_WIDTH, mode);
+
+	csr_write_satp(satp);
 }
 
 uint64 csr_read_time(void)

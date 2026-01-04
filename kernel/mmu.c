@@ -84,3 +84,27 @@ Error mmap_page(void *pagetable, uint64 virtual_addr, uint64 physical_addr, Page
 
 	return E_OK;
 }
+
+void mmap_kernel_space(void)
+{
+	Error err;
+
+	kernel_pagetable = alloc_physical_page();
+	if (kernel_pagetable == NULL) {
+		panic("failed to allocate kernel pagetable");
+	}
+
+	for (uint64 page = IMAGE_START(); page < IMAGE_END(); page += PAGE_SIZE) {
+		err = mmap_page(kernel_pagetable, page, page, PAGE_PERM_KERNEL);
+		panic_on(err, "failed to mmap kernel space");
+	}
+}
+
+void mmu_init(void)
+{
+}
+
+void mmu_enable(void)
+{
+	csr_set_satp((uint64)kernel_pagetable >> 12, 0, SATP_MODE_SV39);
+}

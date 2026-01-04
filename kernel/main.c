@@ -3,6 +3,7 @@
 
 #include <sys/kconsole.h>
 #include <sys/ktime.h>
+#include <sys/mmu.h>
 #include <sys/riscv.h>
 
 extern void trap_init(void);
@@ -43,6 +44,9 @@ void main(void)
 	kconsole_init();
 	trap_init();
 	ktime_init();
+	mmu_init();
+	mmap_kernel_space();
+	mmu_enable();
 
 	kconsole_puts("Hello, kernel\n");
 
