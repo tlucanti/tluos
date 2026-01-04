@@ -4,7 +4,7 @@ LD   ?= riscv64-unknown-elf-ld
 GDB  ?= riscv64-unknown-elf-gdb
 QEMU ?= qemu-system-riscv64
 
-CFLAGS  += -Wall -Wextra -Wno-main
+CFLAGS  += -Wall -Wextra -Wno-main -Wno-main-return-type
 CFLAGS  += -O0 -g3
 CFLAGS  += -nostdlib
 CFLAGS  += -I include
