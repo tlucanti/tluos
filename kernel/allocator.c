@@ -6,8 +6,7 @@
 #include <sys/allocator.h>
 #include <sys/kconsole.h>
 
-#define PAGE_SIZE 4096
-#define KERNEL_MEMORY_PAGES 4096
+#define KERNEL_MEMORY_PAGES 256
 
 __aligned(PAGE_SIZE)
 static uint8 taken_map[KERNEL_MEMORY_PAGES];
@@ -35,6 +34,7 @@ void *alloc_physical_page(void)
 {
 	for (int i = 0; i < KERNEL_MEMORY_PAGES; i++) {
 		if (taken_map[i] == 0) {
+			taken_map[i] = 1;
 			void *page = &kernel_pages[PAGE_SIZE * i];
 
 			zero_page(page);
