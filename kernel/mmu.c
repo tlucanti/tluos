@@ -5,7 +5,7 @@
 #include <kernel/types.h>
 #include <kernel/panic.h>
 
-#include <sys/allocator.h>
+#include <sys/kalloc.h>
 #include <sys/mmu.h>
 #include <sys/riscv.h>
 
@@ -56,7 +56,7 @@ Error walk(uint64 *pagetable, uint64 virtual_addr, bool alloc, void **pte)
 				return E_NOT_EXIST;
 			}
 
-			next = alloc_physical_page();
+			next = kalloc_page();
 			if (next == NULL) {
 				return E_NOMEM;
 			}
@@ -89,7 +89,7 @@ void mmap_kernel_space(void)
 {
 	Error err;
 
-	kernel_pagetable = alloc_physical_page();
+	kernel_pagetable = kalloc_page();
 	if (kernel_pagetable == NULL) {
 		panic("failed to allocate kernel pagetable");
 	}

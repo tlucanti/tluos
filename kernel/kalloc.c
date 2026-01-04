@@ -3,7 +3,7 @@
 #include <kernel/types.h>
 #include <kernel/panic.h>
 
-#include <sys/allocator.h>
+#include <sys/kalloc.h>
 #include <sys/kconsole.h>
 
 #define KERNEL_MEMORY_PAGES 256
@@ -23,14 +23,14 @@ static void zero_page(void *page)
 	}
 }
 
-void allocator_init(void)
+void kalloc_init(void)
 {
 	for (int i = 0; i < KERNEL_MEMORY_PAGES; i++) {
 		taken_map[i] = 0;
 	}
 }
 
-void *alloc_physical_page(void)
+void *kalloc_page(void)
 {
 	for (int i = 0; i < KERNEL_MEMORY_PAGES; i++) {
 		if (taken_map[i] == 0) {
@@ -45,7 +45,7 @@ void *alloc_physical_page(void)
 	return NULL;
 }
 
-void free_physical_page(void *page)
+void kfree_page(void *page)
 {
 	uint64 first_page_addr, addr, page_idx;
 
