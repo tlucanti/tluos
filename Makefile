@@ -27,6 +27,7 @@ obj += kernel/panic.o
 obj += kernel/allocator.o
 obj += kernel/kernelvec.o
 obj += kernel/trap.o
+obj += kernel/mmu.o
 
 $(NAME): $(obj)
 	$(LD) $(LDFLAGS) -T link.ld -o $(NAME) $(obj)
